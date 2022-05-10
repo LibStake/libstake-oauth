@@ -14,6 +14,7 @@ router.get('/authorize', (req: Request<{}, any, any, AccessCodeGrantQuery>, res 
 
 /**
  * Get token(s) via access code or refresh token
+ * Use different authenticate method by itself
  */
 router.post('/token', (req: Request<{}, any, GetTokenBody, any>, res, next) => {
     const [ err, body ] = GetTokenBodyValidator(req.body);

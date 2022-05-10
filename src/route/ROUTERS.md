@@ -23,7 +23,7 @@
 > `POST` `/v1/user/login`
 
 
-- (**OAuth**) `AUTH` `USER` Get access and(or) refresh token information
+- (**OAuth**) `AUTH` `USER` `CLIENT` Get access and(or) refresh token information
 > `GET` `/v1/user/token_info`
 
 
@@ -58,7 +58,7 @@
 > `PUT` `/v1/client/application/update`
 
 - `AUTH` `USER` Update callback uris
-> `PUT` `/v1/client/application/callback`
+> `PUT` `/v1/client/application/update/callback`
 
 - `AUTH` `USER` Delete existing application
 > `DELETE` `/v1/client/application/delete`

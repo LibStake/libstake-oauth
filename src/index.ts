@@ -21,6 +21,7 @@ import { convertUnhandledError, handleError } from "./middleware/error";
 import data_source from './data_source';
 import V1Router from './route/v1';
 import DebugRouter from './route/debug';
+import PageRouter from './route/page';
 
 // Load preset(s)
 const tls_options = process.env.ENABLE_TLS === 'tls'
@@ -50,6 +51,7 @@ app.use(cors());
 
 // Main routers
 app.use(V1Router);
+app.use(PageRouter);
 if (process.env.NODE_ENV !== 'production')
     app.use(DebugRouter);
 app.use((req: Request, res: Response, next: NextFunction) => res.sendStatus(httpStatus.NOT_FOUND));

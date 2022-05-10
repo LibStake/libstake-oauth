@@ -1,16 +1,18 @@
 import Router from 'express';
-import { SignupBodyValidator } from "../../../validation/request/user";
+import { SignupBodyValidator } from '../../../validation/request/user';
 import signup from '../../../service/user/signup';
 import handleAsync from '../../../util/handleAsync';
 import httpStatus from 'http-status';
 import { AuthenticationType } from '../../../discrete_types';
+import authenticate from '../../../middleware/authenticate';
+import { TokenType } from '../../../entitiy/OAuthToken';
 
 const router = Router();
 
 /**
  * Get user profile
  */
-router.get('/me', handleAsync(
+router.get('/me', authenticate({ as: 'any', token_type: TokenType.ACCESS}), handleAsync(
     async (req, res, next) => {
         const auth = res.locals.authentication;
         if (!auth) return res.sendStatus(httpStatus.UNAUTHORIZED);
@@ -30,16 +32,7 @@ router.get('/me', handleAsync(
 /**
  * Update user
  */
-router.put('/me', handleAsync(
-    async (req, res, next) => {
-
-    }
-));
-
-/**
- * Login
- */
-router.post('/login', handleAsync(
+router.put('/me', authenticate({ as: 'user', token_type: TokenType.ACCESS }), handleAsync(
     async (req, res, next) => {
 
     }
@@ -60,16 +53,25 @@ router.post('/signup', handleAsync(
 /**
  * Sign out user
  */
-router.delete('/signout', handleAsync(
+router.delete('/signout', authenticate({ as: 'user', token_type: TokenType.ACCESS }), handleAsync(
    async (req, res, next) => {
 
    }
 ));
 
 /**
+ * Login
+ */
+router.post('/login', handleAsync(
+    async (req, res, next) => {
+
+    }
+));
+
+/**
  * Get Access Token Information
  */
-router.get('/token_info', handleAsync(
+router.get('/token_info', authenticate({ as: 'any', token_type: TokenType.ACCESS }), handleAsync(
     async (req, res, next) => {
 
     }
@@ -78,7 +80,7 @@ router.get('/token_info', handleAsync(
 /**
  * Unlink user to client permanently
  */
-router.post('/unlink', handleAsync(
+router.post('/unlink', authenticate({ as: 'any', token_type: TokenType.ACCESS }), handleAsync(
     async (req, res, next) => {
 
     }
@@ -87,7 +89,7 @@ router.post('/unlink', handleAsync(
 /**
  * Expire both tokens
  */
-router.post('/logout', handleAsync(
+router.post('/logout', authenticate({ as: 'user', token_type: TokenType.ACCESS }), handleAsync(
     async (req, res, next) => {
 
     }

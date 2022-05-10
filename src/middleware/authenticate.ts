@@ -7,7 +7,7 @@ import { compareBaseURL } from '../util/url';
 
 type AuthenticateOption = {
     as: 'user'|'admin'|'any', // This defines what kind of key(or token) is needed
-    token_type?: TokenType, // This value is undefined if `as = admin`
+    token_type?: TokenType.ACCESS, // This value is undefined if `as = admin`
 };
 
 /**
