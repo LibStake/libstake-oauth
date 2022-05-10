@@ -1,0 +1,19 @@
+# OS specific
+**/.DS_Store
+**/Thumbs.db
+
+# Node
+**/node_modules
+# Jetbrains folder
+**/.idea
+# Build path
+dist
+# Dotenv file
+env/**/.env
+!env/.env.example
+# Certificate
+**/*.pem
+# Log file
+**/*.log
+# Deprecated file
+**/_deprecate
