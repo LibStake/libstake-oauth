@@ -99,7 +99,7 @@ export default class ClientInfo extends ExtendedEntity {
     /**
      * Get single or null `ClientInfo` via `client_id`
      */
-    static async findByClientId(client_id: number): Promise<ClientInfo|null> {
+    static async findByClientId(client_id: string): Promise<ClientInfo|null> {
         return await this.createQueryBuilder()
             .where('client_id = :client_id', { client_id }).getOne();
     }

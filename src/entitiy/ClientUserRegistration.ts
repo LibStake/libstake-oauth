@@ -1,17 +1,10 @@
-import {
-    Column,
-    Entity,
-    Index,
-    ManyToOne,
-    OneToMany,
-    ObjectLiteral,
-    DeepPartial,
-} from 'typeorm';
+import { Column, DeepPartial, Entity, Index, ManyToOne, ObjectLiteral, OneToMany, } from 'typeorm';
 import ExtendedEntity, { ExtendedEntityToObjectOption } from './base/ExtendedEntity';
 import ClientInfo, { ClientInfoToObjectOption } from './ClientInfo';
 import UserInfo, { UserInfoToObjectOption } from './UserInfo';
-import OAuthToken from './OAuthToken';
+import OAuthToken, { TokenType } from './OAuthToken';
 import OAuthAccessCode from './OAuthAccessCode';
+import { randomSHA256 } from '../util/sha';
 
 export interface ClientUserRegistrationToObjectOption extends ExtendedEntityToObjectOption{
     client?: ClientInfoToObjectOption,
@@ -70,6 +63,35 @@ export default class ClientUserRegistration extends ExtendedEntity {
         if (include.client) Object.assign(ret, { client: this.client.toObject(include, false) });
         if (include.user) Object.assign(ret, { user: this.user.toObject(include, false) });
         return ret;
+    }
+
+    /**
+     * Create token pair(access, refresh) for registrations
+     */
+    public async createTokenPair(): Promise<{ accessToken: OAuthToken, refreshToken: OAuthToken }> {
+        // TODO: Insert 2 tokens in single query - not seperated query.
+        const [ accessToken, refreshToken ] = await Promise.all([
+            this.createToken(TokenType.ACCESS),
+            this.createToken(TokenType.REFRESH),
+        ]);
+        return { accessToken, refreshToken };
+    }
+
+    /**
+     * Create single token for registration
+     */
+    public async createToken(type: TokenType): Promise<OAuthToken> {
+        const now = new Date();
+
+        const tokenDraft = new OAuthToken();
+        tokenDraft.registration = this;
+        tokenDraft.token_type = type;
+        tokenDraft.token = randomSHA256().toString();
+        tokenDraft.issued_at = now;
+        tokenDraft.expires_in = (type === TokenType.ACCESS)
+                                ?parseInt(process.env.OAUTH_ACCESS_TOKEN_EXPIRATION_IN_MILLI || '3600000')
+                                :parseInt(process.env.OAUTH_REFRESH_TOKEN_EXPIRATION_IN_MILLI || '1296000000');
+        return await tokenDraft.save();
     }
 
     /**

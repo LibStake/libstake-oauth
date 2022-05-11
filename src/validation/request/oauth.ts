@@ -11,13 +11,14 @@ export const AccessCodeGrantValidator = AccessCodeGrantQuerySchema.destruct();
 
 const GetTokenBodySchema = Schema.either(
         Schema({
+            // Token via code
             type: string.equals('grant_code'),
             client_id: string.min(1),
-            redirect_uri: WebURLRegex,
             code: string.min(1),
             client_secret: string.min(1).strictOptional(),
         }, { strict: true }),
         Schema({
+            // Token via refresh token
             type: string.equals('refresh_token'),
             client_id: string.min(1),
             refresh_token: string.min(1),

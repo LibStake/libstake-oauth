@@ -55,6 +55,14 @@ export default class OAuthAccessCode extends ExtendedEntity {
     }
 
     /**
+     * Get single or null `OAuthAccessCode` via code key
+     */
+    static async findByCode(code: string): Promise<OAuthAccessCode|null> {
+        return await this.createQueryBuilder()
+            .where('code = :code', { code }).getOne();
+    }
+
+    /**
      * Create grant code of registered user.
      * @param registration `ClientUserRegistration` Instance
      * @returns Created `OAuthAccessCode` instance.
