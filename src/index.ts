@@ -12,7 +12,7 @@ import { readFileSync } from "fs";
 import { loadServerEnvironment } from "./config/env";
 loadServerEnvironment();
 
-import { CERT_PATH } from "./config/path";
+import { CERT_PATH, VIEW_PATH } from './config/path';
 import server_logger from "./config/server_logger";
 import { infoLogHandler, errorLogHandler } from './config/express_logger';
 import { convertUnhandledError, handleError } from "./middleware/error";
@@ -34,6 +34,10 @@ const SERVER_PORT = parseInt(process.env.SERVER_PORT as string);
 
 // Initialize server instance
 const app: Express = express();
+
+// Set view engine & path
+app.set('view engine', 'pug');
+app.set('views', VIEW_PATH);
 
 // Add request logger
 app.use(infoLogHandler);
