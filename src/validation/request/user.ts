@@ -6,8 +6,8 @@ const GetUserInfoQuerySchema = Schema({
     via: string.equals('classifier').strictOptional(),
     target_id: string.strictOptional(),
 }, { strict: true })
-export type GetUserInfoParam = Type<typeof GetUserInfoQuerySchema>;
-export const GetUserInfoParamValidator = GetUserInfoQuerySchema.destruct();
+export type GetUserInfoQuery = Type<typeof GetUserInfoQuerySchema>;
+export const GetUserInfoQueryValidator = GetUserInfoQuerySchema.destruct();
 
 const UpdateUserInfoBodySchema = Schema({
     realname: string.min(1).strictOptional(),

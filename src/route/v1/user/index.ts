@@ -1,6 +1,7 @@
 import Router from 'express';
 import {
-    GetUserInfoParamValidator,
+    GetUserInfoQuery,
+    GetUserInfoQueryValidator,
     LoginBodyValidator,
     SignupBodyValidator,
     UnlinkBodyValidator,
@@ -22,7 +23,7 @@ const router = Router();
  */
 router.get('/me', authenticate({ as: 'any', token_type: TokenType.ACCESS}), handleAsync(
     async (req, res, next) => {
-        const [ err, query ] = GetUserInfoParamValidator(req.query);
+        const [ err, query ] = GetUserInfoQueryValidator(req.query as GetUserInfoQuery);
         if (err) throw err;
 
         const auth = res.locals.authentication;
@@ -105,6 +106,7 @@ router.post('/login', handleAsync(
         if (credential.compare(form!.password)) {
             // TODO - Find & validate client and callback
             // TODO - Grant new code
+            return res.redirect('...');
         } else return res.sendStatus(httpStatus.UNAUTHORIZED);
     }
 ));
@@ -133,7 +135,7 @@ router.get('/token_info', authenticate({ as: 'user', token_type: TokenType.ACCES
 /**
  * Unlink user to client permanently
  */
-router.post('/unlink', authenticate({ as: 'any', token_type: TokenType.ACCESS }), handleAsync(
+router.post('/unlink', authenticate( { as: 'any', token_type: TokenType.ACCESS }), handleAsync(
     async (req, res, next) => {
         const [ err, body ] = UnlinkBodyValidator(req.body);
         if (err) throw err;
