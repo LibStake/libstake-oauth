@@ -23,7 +23,7 @@
 > `POST` `/v1/user/login`
 
 
-- (**OAuth**) `AUTH` `USER` `CLIENT` Get access and(or) refresh token information
+- (**OAuth**) `AUTH` `USER` Get access and(or) refresh token information
 > `GET` `/v1/user/token_info`
 
 

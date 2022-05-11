@@ -23,6 +23,7 @@ const isValidOrigin = async (client: ClientInfo, request: Request) => {
 const REGEX_AUTH_HEADER: RegExp = /[a-zA-Z\d]+ [a-zA-Z\d]+/gi
 /**
  * Returns middleware that authenticate credential and required authority.
+ * This guarantee that `res.locals.authentication` exists
  */
 const authenticate = (method: AuthenticateOption): RequestHandler => async (req, res, next) => {
     const authStr: string|undefined = req.header('Authorization') || req.header('authorization') || '';

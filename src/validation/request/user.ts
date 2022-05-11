@@ -1,13 +1,11 @@
 import Schema, { Type, boolean, string } from 'computed-types';
-import { EmailRegex, NationalPhoneNumber } from '../regex';
+import { EmailRegex, NationalPhoneNumber, WebURLRegex } from '../regex';
 
-const GetUserInfoQuerySchema = Schema.either(
-    Schema({}, { strict: true }), // As User
-    Schema({    // As Admin
-        via: string.equals('classifier'),
-        target_id: string,
-    }, { strict: true }),
-);
+const GetUserInfoQuerySchema = Schema({
+    // Query are valid only when via AdminKey
+    via: string.equals('classifier').strictOptional(),
+    target_id: string.strictOptional(),
+}, { strict: true })
 export type GetUserInfoParam = Type<typeof GetUserInfoQuerySchema>;
 export const GetUserInfoParamValidator = GetUserInfoQuerySchema.destruct();
 
@@ -39,15 +37,7 @@ const LoginBodySchema = Schema({
 export type LoginBody = Type<typeof LoginBodySchema>;
 export const LoginBodyValidator = LoginBodySchema.destruct();
 
-const GetTokenInfoQuerySchema = Schema.either(
-    Schema({}, { strict: true }),   // As User
-    Schema({    // As Admin
-        via: string.equals('classifier'),
-        target_id: string,
-    }, { strict: true })
-);
-export type GetTokenInfoQuerySchema = Type<typeof GetTokenInfoQuerySchema>;
-export const GetTokenInfoQueryValidator = GetTokenInfoQuerySchema.destruct();
+/* No GetTokenInfo Schema */
 
 const UnlinkBodySchema = Schema.either(
     Schema({    // As User & Admin
