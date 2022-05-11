@@ -73,6 +73,13 @@ export default class ClientUserRegistration extends ExtendedEntity {
     }
 
     /**
+     * Make all related tokens expired
+     */
+    public async setExpiredRelatedTokens(): Promise<void> {
+        await OAuthToken.setExpired(await this.tokens);
+    }
+
+    /**
      * Get single or null `ClientUserRegistration` via primary key
      */
     static async findById(id: number): Promise<ClientUserRegistration|null> {

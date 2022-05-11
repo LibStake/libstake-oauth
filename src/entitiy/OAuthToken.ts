@@ -59,6 +59,19 @@ export default class OAuthToken extends ExtendedEntity {
     }
 
     /**
+     * Set token's `expires_in` to 0
+     * @param tokens Token to expire
+     */
+    static async setExpired(tokens: OAuthToken[]): Promise<void> {
+        const ids = tokens.map(tk => tk.id);
+        await this.createQueryBuilder()
+            .update()
+            .set({ expires_in: 0 })
+            .whereInIds(ids).execute();
+        return;
+    }
+
+    /**
      * Get single or null `OAuthToken` via primary key
      */
     static async findById(id: number): Promise<OAuthToken|null> {
