@@ -23,14 +23,15 @@ const isValidOrigin = async (client: ClientInfo, request: Request) => {
 const REGEX_AUTH_HEADER: RegExp = /[a-zA-Z\d]+ [a-zA-Z\d]+/gi
 /**
  * Returns middleware that authenticate credential and required authority.
- * This guarantee that `res.locals.authentication` exists
+ * This guarantee that `res.locals.authentication` exists if authorized.
+ * If not, it will be `res.locals.authentication = undefined`
  */
-const authenticate = (method: AuthenticateOption): RequestHandler => async (req, res, next) => {
+const authenticate = (method: AuthenticateOption, requireAuth: boolean = true): RequestHandler => async (req, res, next) => {
     const authStr: string|undefined = req.header('Authorization') || req.header('authorization') || '';
-    if (!authStr || !authStr.match(REGEX_AUTH_HEADER))
+    if ((!authStr || !authStr.match(REGEX_AUTH_HEADER)) && requireAuth)
         return res.sendStatus(httpStatus.BAD_REQUEST);
     const [ authType, token ] = authStr.split(' ');
-    if (!token)
+    if (!token && requireAuth)
         return res.sendStatus(httpStatus.BAD_REQUEST);
 
     let authentication: ResponseLocalAuthentication|undefined;
@@ -65,9 +66,9 @@ const authenticate = (method: AuthenticateOption): RequestHandler => async (req,
             identity: clientInfo,
         }
 
-    } else return res.sendStatus(httpStatus.UNAUTHORIZED);
-
-    Object.assign(res.locals, { authentication });
+    } else if (requireAuth) return res.sendStatus(httpStatus.UNAUTHORIZED);
+    if (authentication)
+        Object.assign(res.locals, { authentication });
     return next();
 }
 export default authenticate;
